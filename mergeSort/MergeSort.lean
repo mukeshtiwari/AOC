@@ -11,6 +11,82 @@ section MergeSort
   def splitList : Nat -> List A -> List A × List A :=
     fun n xs => (List.take n xs, List.drop n xs)
 
+  
+  theorem take_decreasing : 
+    forall (xs : List A) (n : Nat), 
+    n < List.length xs -> 
+    sizeOf (List.take n xs) < sizeOf xs := by 
+    intro xs
+    induction xs with 
+    | nil => 
+      focus
+        intros n Ha 
+        contradiction 
+    | cons xh xhs ih => 
+      focus
+        intros n Ha 
+        cases n with 
+        | zero => 
+          focus 
+            unfold List.take 
+            simp 
+            simp at Ha 
+            
+        | succ n' =>
+          focus
+            unfold List.take 
+            simp 
+            simp at Ha 
+
+
+    theorem drop_decreasing : 
+      forall (xs : List A) (n : Nat), 
+      0 < n -> 
+      0 < List.length xs ->
+      sizeOf (List.drop n xs) < sizeOf xs := by 
+      intro xs
+      induction xs with 
+      | nil => 
+        focus
+          intros n Ha Hb 
+          contradiction
+      | cons xh xhs ih => 
+        focus
+          intros n Ha Hb 
+          cases n with 
+          | zero => 
+            focus 
+              contradiction
+          | succ n' =>
+            focus
+              cases xhs with 
+              | nil => 
+                sorry 
+              | cons yh yhs =>
+                sorry 
+                /-
+                  requires transitivy of < 
+                  I don't know how to 
+                  simplify 
+                -/
+
+
+              
+
+  theorem splitList_decreasing : 
+    ∀ (n : Nat) (xs xsh ysh : List A), 
+      0 < n -> 
+      n < (List.length xs) -> 
+      0 < List.length xs ->
+      (xsh, ysh) = splitList n xs ->
+      sizeOf xsh < sizeOf xs ∧ 
+      sizeOf ysh < sizeOf xs := by 
+    intros n xs xsh ysh Ha Hb Hc Hd 
+    unfold splitList at Hd 
+    sorry 
+        
+
+
 
   def splitHalf : List A -> List A × List A :=
     fun xs => splitList (Nat.div (xs.length) 2) xs
@@ -33,7 +109,7 @@ section MergeSort
     match splitHalf (x₁ :: x₂ :: xs) with 
     | (xsh, ysh) => 
         have : sizeOf xsh < sizeOf (x₁ :: x₂ :: xs) := by 
-          sorry
+          sorry 
         have : sizeOf ysh < sizeOf (x₁ :: x₂ :: xs) := by 
           sorry 
         mergeList f (mergeSort xsh) (mergeSort ysh)

@@ -1,4 +1,5 @@
-import Daytwo
+import Daytwo 
+
 
 
 instance : ToString OpponentMove where
@@ -29,6 +30,7 @@ match c.trim.toList with
 | _ => (OpponentMove.Cscissors, MeMove.Zscissors)
 
 
+part one
 def solveGame : List (OpponentMove × MeMove) -> List Nat :=
   fun xs => List.map computeScore xs 
 
