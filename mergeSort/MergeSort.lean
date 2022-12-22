@@ -31,12 +31,14 @@ section MergeSort
             unfold List.take 
             simp 
             simp at Ha 
+            sorry 
             
         | succ n' =>
           focus
             unfold List.take 
             simp 
             simp at Ha 
+            sorry 
 
 
     theorem drop_decreasing : 
@@ -114,8 +116,58 @@ section MergeSort
           sorry 
         mergeList f (mergeSort xsh) (mergeSort ysh)
 
+
+  def go : A -> List A -> List A × List A 
+  | _, [] => ([], [])
+  | z, (x :: xs) => 
+    match go z xs with 
+    | (ys, zs) => 
+      match f x z with 
+      | true => (x :: ys, zs)
+      | _ => (ys, x :: zs) 
+
+  theorem go_decreasing : 
+    ∀ (xs : List A) (z : A), 
+    ¬(xs = [])  -> 
+    match go f z xs with 
+    | (ys, zs) => sizeOf zs < sizeOf xs := by 
+    intro xs 
+    induction xs with 
+    | nil => 
+      intros z Ha 
+      contradiction
+    | cons x xs ih => 
+      intros z Ha
+      unfold go 
+      simp 
+      cases (f x z) with 
+      | true => 
+        simp
+        cases xs with 
+        | nil => 
+          unfold go 
+          simp 
+        | cons xt xsh =>
+          unfold go
+          simp 
+          sorry 
+      | false => sorry
+      
+      
+
+
+  
+  def groupBy : List A -> List (List A) 
+  | [] => []
+  | (x :: xs) => 
+    match go f x (x :: xs) with 
+    | (ys, zs) => 
+      have : sizeOf zs < sizeOf (x :: xs) := by sorry 
+      ys :: groupBy zs
+  
  
 end MergeSort
 
-#eval mergeSort (fun x y => x <= y)  [9, 8, 10, 1]
+#eval groupBy (fun x y => x == y) [1, 1, 3, 4, 5]
+#eval mergeSort (fun x y => x <= y)  [100, 200, 3, -1, 9, 8, 10, 1]
 #eval mergeList (fun x y => x <= y) [8, 9, 10] [1, 2, 3] 
